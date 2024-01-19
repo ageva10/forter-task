@@ -2,7 +2,6 @@
 
 Hi there! :)
 
-
 Your challenge is to build a very simple chat bot web app.
 
 In this repository, you will find working server and client skeletons.
