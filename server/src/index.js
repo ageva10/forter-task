@@ -6,13 +6,12 @@ import cors from 'cors'
 const app = express()
 app.use(cors())
 
-let isAnswer = false
 const AI = []
-
-const http =  httpServer.createServer(app)
 const users = {
   BOT: { name: 'BOT (SM)' }
 }
+
+const http =  httpServer.createServer(app)
 
 http.listen(3000, () => console.log('Listening on *:3000'))
 
