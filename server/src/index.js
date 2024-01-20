@@ -72,6 +72,7 @@ io.on('connection', (socket) => {
     if (index > -1 && AI[index].Q) {
       io.emit('event:new-message', `Awesome Bot: ${AI[index].Q}`)
     } else if (content.endsWith('?')) {
+      if (AI.length > 0 && AI[length - 1].Q === null) AI.splice(length - 1, 1)
       AI.push({ ID: socket.id, A: content.split(' '), Q: null })
     }
 
