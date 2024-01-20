@@ -24,10 +24,14 @@ const io = new Server(http, {
 function commonWordsPercentage(array1, array2) {
   if (array1.length === 0 || array2.length === 0) return 0
   const commonWords = array1.filter(w1 => {
-    const regex = new RegExp('\\b' + w1 + '\\b', 'i')
-    return array2.some(w2 => regex.test(w2))
+    try {
+      const regex = new RegExp('\\b' + w1 + '\\b', 'i')
+      return array2.some(w2 => regex.test(w2))
+    } catch {
+      return 0
+    }
   })
-  return (commonWords.length / Math.min(array1.length, array2.length)) * 100
+  return (commonWords.length / Math.max(array1.length, array2.length)) * 100
 }
 
 io.on('connection', (socket) => {
@@ -61,7 +65,7 @@ io.on('connection', (socket) => {
     let index = -1
     for (let i = 0; i < length; i++) {
       const percentage = commonWordsPercentage(AI[i].A, splitMessage)
-      if (percentage >= 50) {
+      if (percentage >= 50 && content.endsWith('?')) {
         index = i
       }
     }

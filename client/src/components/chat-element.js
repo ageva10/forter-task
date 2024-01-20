@@ -1,6 +1,7 @@
 import { LitElement, html } from 'lit'
 import { unsafeHTML } from 'lit/directives/unsafe-html.js'
 import { io } from 'https://cdn.socket.io/4.4.1/socket.io.esm.min.js'
+import { styleMap } from 'lit/directives/style-map.js'
 import style from './chat-element.css.js'
 
 class ChatElement extends LitElement {
@@ -10,7 +11,8 @@ class ChatElement extends LitElement {
     users: { type: Array },
     connected: { type: Boolean },
     messages: { type: Array },
-    newMessage: { type: String }
+    newMessage: { type: String },
+    userColor: { type: String }
   }
 
   constructor() {
@@ -21,6 +23,7 @@ class ChatElement extends LitElement {
     this.name = null
     this.messages = []
     this.newMessage = ''
+    this.userColor = { color: 'blue' }
   }
 
   listenToChat() {
@@ -110,7 +113,7 @@ class ChatElement extends LitElement {
           <div class="chat">
             <div class="left-box">
               ${Object.values(this.users).map(user => 
-                html`<div class="user">${user.name}</div>`
+                html`<div class="user" style=${styleMap(user.name === this.name ? this.userColor : {})}>${user.name}</div>`
               )}
             </div>
             <div class="right-box">
