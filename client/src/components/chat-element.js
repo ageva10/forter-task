@@ -1,6 +1,5 @@
-import { LitElement, html, css } from 'lit'
+import { LitElement, html } from 'lit'
 import { unsafeHTML } from 'lit/directives/unsafe-html.js'
-import { styleMap } from 'lit/directives/style-map.js'
 import { io } from 'https://cdn.socket.io/4.4.1/socket.io.esm.min.js'
 import style from './chat-element.css.js'
 

@@ -22,6 +22,15 @@ const io = new Server(http, {
   }
 })
 
+function commonWordsPercentage(array1, array2) {
+  if (array1.length === 0 || array2.length === 0) return 0
+  const commonWords = array1.filter(w1 => {
+    const regex = new RegExp('\\b' + w1 + '\\b', 'i')
+    return array2.some(w2 => regex.test(w2))
+  })
+  return (commonWords.length / Math.min(array1.length, array2.length)) * 100
+}
+
 io.on('connection', (socket) => {
 
   if (!users[socket.id]) users[socket.id] = {}
@@ -42,12 +51,20 @@ io.on('connection', (socket) => {
 
   socket.on('event:new-message', (message) => {
     const content = message.split(':')[1].trim()
+    const splitMessage = content.split(' ')
 
-    let index = AI.findLastIndex(val => [content.toLowerCase()].includes(val.A.toLowerCase()))
-    
-    const length = AI.length - 1
-    if (AI.length > 0 && AI[length].Q === null && AI[length].ID !== socket.id) {
-      AI[length].Q = content
+    const length = AI.length
+
+    if (length > 0 && AI[length - 1].Q === null && AI[length - 1].ID !== socket.id) {
+      AI[length - 1].Q = content
+    }
+
+    let index = -1
+    for (let i = 0; i < length; i++) {
+      const percentage = commonWordsPercentage(AI[i].A, splitMessage)
+      if (percentage >= 50) {
+        index = i
+      }
     }
 
     socket.broadcast.emit('event:new-message', message)
@@ -55,8 +72,10 @@ io.on('connection', (socket) => {
     if (index > -1 && AI[index].Q) {
       io.emit('event:new-message', `Awesome Bot: ${AI[index].Q}`)
     } else if (content.endsWith('?')) {
-      AI.push({ ID: socket.id, A: content, Q: null })
+      AI.push({ ID: socket.id, A: content.split(' '), Q: null })
     }
+
+    console.log(AI)
 
   })
 
